@@ -2,40 +2,48 @@ import numpy as np
 import matplotlib.pyplot as plt
 from shapely.geometry import Polygon
 import sympy as sp
-restricciones = [
-    [6, 12, 396],
-    [12, 30, 816],
-    [4, 12, 312],
-    [20, 30, 1200]
+
+
+# Formato [Cant1X, Cant2Y, LadoDerecho]
+restriccionesMenorIgual = [
+    [20, 100, 73000],
+    [30, 10, 15000],
+    [0, 1, 700],
 ]
 
-# Crear un rango de valores para x
-x = np.linspace(0, 100, 100)
+restriccionesMayorIgual = [
+    [1,0,100],
+    [0,1,100]
+]
 
-# Crear un gráfico
-plt.figure(figsize=(8, 6))
+# Encontrar todos los puntos de interseccion entre las rectas de las restricciones
 
-# Crear el área factible sombreada
-for i, restriccion in enumerate(restricciones):
-    a, b, c = restriccion
-    y = (c - a * x) / b
-    if i == 0:
-        plt.fill_between(x, 0, y, where=(y >= 0), alpha=0.5, label='Área Factible')
-    else:
-        plt.fill_between(x, 0, y, where=(y >= 0), alpha=0.5)
+# Ver que puntos cumplen todas las restricciones
 
-# Establecer límites en los ejes
-plt.xlim(0, None)
-plt.ylim(0, None)
+# Los puntos restantes deberian de ser los que forman el polinomio de la zona factible
 
-# Etiquetas y título
-plt.xlabel('Eje X')
-plt.ylabel('Eje Y')
-plt.title('Área Factible')
 
-# Agregar leyenda
-plt.legend()
 
-# Mostrar el gráfico sin las líneas de las restricciones
-plt.grid(False)
+X = np.linspace(0, 2000, 400)  # Valores de X de 0 a 2000
+Y = np.linspace(0, 2000, 400)  # Valores de Y de 0 a 2000
+
+# Crear una cuadrícula de valores X e Y
+X, Y = np.meshgrid(X, Y)
+
+# Calcular las desigualdades para las restricciones MenorIgual
+for restriccion in restriccionesMenorIgual:
+    Z = restriccion[0] * X + restriccion[1] * Y - restriccion[2]
+    plt.contour(X, Y, Z, levels=[0], colors='r')
+
+# Calcular las desigualdades para las restricciones MayorIgual
+for restriccion in restriccionesMayorIgual:
+    Z = restriccion[0] * X + restriccion[1] * Y - restriccion[2]
+    plt.contour(X, Y, Z, levels=[0], colors='b')
+
+# Configurar los ejes y mostrar el gráfico
+plt.xlabel('X')
+plt.ylabel('Y')
+plt.xlim(0, 2000)
+plt.ylim(0, 2000)
+plt.grid(True)
 plt.show()
