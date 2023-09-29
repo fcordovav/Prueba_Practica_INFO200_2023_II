@@ -1,0 +1,18 @@
+Se requiere determinar la cantidad óptima de unidades de infantería y de fuerza aérea que deben asignarse 
+a una armada para maximizar su poder de ataque, donde las unidades de infanteria aportan 1 de Poder de 
+ataque y las unidades aereas de 4. La armada dispone de un total de 100,000 galones de 
+gasolina y 15,000 kg de acero. La creación de estas unidades tiene requisitos de recursos: la infantería 
+necesita 20 galones de gasolina y 30 kg de acero por unidad, la fuerza aérea requiere 100 galones de 
+gasolina y 10 kg de acero por unidad. Además, se establecen estándares militares los cuales indican que 
+requiere un mínimo de 100 unidades para cada una de las ramas militares. Asimismo, se establecen 
+restricciones adicionales: la cantidad de unidades de fuerza aérea no puede superar las 700 unidades.
+
+x: cantidad de infanteria
+y: cantidad de fuerza aerea
+Max p = 1x + 4y
+s.a:
+    20x + 100y <= 100_000
+    30x + 10y <= 15_000
+    y <= 700
+    x,y >= 100
+
