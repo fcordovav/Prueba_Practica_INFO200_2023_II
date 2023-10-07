@@ -3,8 +3,21 @@ import numpy as np
 import matplotlib.pyplot as plt
 from pulp import *
 
-# Tomo los valores del excel, solo modificar los num en el excel 
+# Funcion para encontrar la interseccion entre dos restricciones
+def encontrar_interseccion(restriccion1, restriccion2):
+    A = np.array([restriccion1[:2], restriccion2[:2]])
+    b = np.array([restriccion1[2], restriccion2[2]])
+    try:
+        punto = np.linalg.solve(A, b)
+        return punto
+    except np.linalg.LinAlgError:
+        return None
 
+# Funcion para evaluar en la funcion objetivo
+def f(x, y):
+    return funcionObjetivo[0] * x + funcionObjetivo[1] * y
+
+# Tomo los valores del excel, solo modificar los num en el excel 
 wb = openpyxl.load_workbook("../Excel/problema.xlsx")
 sheet = wb.active
 funcionObjetivo = [sheet["C3"].value, sheet["D3"].value, sheet["E3"].value]
@@ -24,17 +37,6 @@ restriccionesMayorIgual = [
 
 ### Encontrar todos los puntos de interseccion entre las rectas de las restricciones ###
 puntos_interseccion = []
-
-# Función para encontrar la intersección entre dos restricciones
-def encontrar_interseccion(restriccion1, restriccion2):
-    A = np.array([restriccion1[:2], restriccion2[:2]])
-    b = np.array([restriccion1[2], restriccion2[2]])
-    try:
-        punto = np.linalg.solve(A, b)
-        return punto
-    except np.linalg.LinAlgError:
-        return None
-
 
 # Iterar a través de todas las combinaciones de restricciones, Para encontrar las intersecciones
 for i, restriccion1 in enumerate(restriccionesMenorIgual + restriccionesMayorIgual):
@@ -63,13 +65,8 @@ for punto in puntos_interseccion:
 
 ### Eliminar puntos repetidos en puntosPolinomio ###
 puntosPolinomio = list(set(tuple(p) for p in puntosPolinomio))
-# Func optima
-def f(x, y):
-    return funcionObjetivo[0] * x + funcionObjetivo[1] * y
 
-# Vertices de la zona factible
 maximo = [0,0,0]
-
 # Guarda los resultados en el arreglo tras evaluarlos en la funcion
 resultados = []
 for punto in puntosPolinomio:
@@ -88,19 +85,19 @@ for i, punto in enumerate(puntosPolinomio):
     print(f"En el punto ({x}, {y}), f(x, y) = {resultado}")
 
 #####################################
-#### Para obtener solución óptima ###
+#### Para obtener solución optima ###
 #####################################
 # Con esto evito un mensaje enorme en consola
 pulp.LpSolverDefault.msg = 0
 
-# Definir el problema de optimización
+# Definir el problema de optimizacion
 problema = LpProblem("testeo", LpMaximize)
 
 # Variables
 x = LpVariable("x", lowBound=100)
 y = LpVariable("y", 100, 700)
 
-# Función objetivo
+# Funcion objetivo
 problema += funcionObjetivo[0] * x + funcionObjetivo[1] * y, "obj"
 
 # Restricciones
@@ -108,18 +105,12 @@ problema += restriccionesMenorIgual[0][0] * x + restriccionesMenorIgual[0][1] * 
 problema += restriccionesMenorIgual[1][0] * x + restriccionesMenorIgual[1][1] * y <= restriccionesMenorIgual[1][2], "cl_2"
 problema.solve()
 
-# Valores óptimos de x e y
+# Valores optimos de x e y
 x_opt = x.varValue
 y_opt = y.varValue
 
-# Valor óptimo de la función objetivo
+# Valor optimo de la función objetivo
 print(f"Max Z = {value(problema.objective)}")
-
-
-#########################################
-#### Para graficas las restricciones ####
-#########################################
-
 
 #########################
 #### Graficar Rectas ####
@@ -162,7 +153,10 @@ plt.scatter(
 plt.savefig("../images/restricciones.png")
 plt.show()
 
-# Para Graficar zona factible
+################################
+#### Graficar zona factible ####
+################################
+
 x = np.linspace(0, 1000, 400)
 y = np.linspace(0, 1000, 400)
 x, y = np.meshgrid(x, y)
@@ -179,10 +173,6 @@ region_de_interes = condicion1 & condicion2 & condicion3 & condicion4 & condicio
 
 # Crear una máscara booleana para la región que cumple con las restricciones
 region_de_interes = np.ma.masked_where(region_de_interes == False, region_de_interes)
-
-################################
-#### Graficar zona factible ####
-################################
 
 plt.figure(figsize=(8, 6))
 plt.contourf(x, y, region_de_interes, cmap="viridis", alpha=0.5)

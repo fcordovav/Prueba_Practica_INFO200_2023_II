@@ -2,6 +2,20 @@ import numpy as np
 import matplotlib.pyplot as plt
 from pulp import *
 
+# Función para encontrar la intersección entre dos restricciones
+def encontrar_interseccion(restriccion1, restriccion2):
+    A = np.array([restriccion1[:2], restriccion2[:2]])
+    b = np.array([restriccion1[2], restriccion2[2]])
+    try:
+        punto = np.linalg.solve(A, b)
+        return punto
+    except np.linalg.LinAlgError:
+        return None
+
+# Func optima
+def f(x, y):
+    return x + 4 * y
+
 #####################################
 #### Para obtener solución óptima ###
 #####################################
@@ -30,9 +44,9 @@ y_opt = y.varValue
 # Valor óptimo de la función objetivo
 print(f"Max Z = {value(problema.objective)}")
 
-#########################################
-#### Para graficas las restricciones ####
-#########################################
+###################################################################
+#### Obtener la solucion optima, pero con el arreglo de puntos ####
+###################################################################
 
 ### Formato [Cant1X, Cant2Y, LadoDerecho] ###
 restriccionesMenorIgual = [
@@ -40,23 +54,10 @@ restriccionesMenorIgual = [
     [30, 10, 15000],
     [0, 1, 700],
 ]
-restriccionesMayorIgual = [
-    [1,0,100],
-    [0,1,100]
-]
+restriccionesMayorIgual = [[1, 0, 100], [0, 1, 100]]
 
 ### Encontrar todos los puntos de interseccion entre las rectas de las restricciones ###
 puntos_interseccion = []
-
-# Función para encontrar la intersección entre dos restricciones
-def encontrar_interseccion(restriccion1, restriccion2):
-    A = np.array([restriccion1[:2], restriccion2[:2]])
-    b = np.array([restriccion1[2], restriccion2[2]])
-    try:
-        punto = np.linalg.solve(A, b)
-        return punto
-    except np.linalg.LinAlgError:
-        return None
 
 # Iterar a través de todas las combinaciones de restricciones, Para encontrar las intersecciones
 for i, restriccion1 in enumerate(restriccionesMenorIgual + restriccionesMayorIgual):
@@ -86,6 +87,22 @@ for punto in puntos_interseccion:
 ### Eliminar puntos repetidos en puntosPolinomio ###
 puntosPolinomio = list(set(tuple(p) for p in puntosPolinomio))
 
+# Vertices de la zona factible
+print(puntosPolinomio)
+
+# Guarda los resultados en el arreglo tras evaluarlos en la funcion
+resultados = []
+for punto in puntosPolinomio:
+    x, y = punto
+    resultado = f(x, y)
+    resultados.append(resultado)
+
+# Imprime los resultados
+for i, punto in enumerate(puntosPolinomio):
+    x, y = punto
+    resultado = resultados[i]
+    print(f"En el punto ({x}, {y}), f(x, y) = {resultado}")
+
 #########################
 #### Graficar Rectas ####
 #########################
@@ -101,16 +118,16 @@ plt.figure(figsize=(8, 6))
 # Calcular las desigualdades para las restricciones MenorIgual
 for restriccion in restriccionesMenorIgual:
     Z = restriccion[0] * X + restriccion[1] * Y - restriccion[2]
-    plt.contour(X, Y, Z, levels=[0], colors='r')
+    plt.contour(X, Y, Z, levels=[0], colors="r")
 
 # Calcular las desigualdades para las restricciones MayorIgual
 for restriccion in restriccionesMayorIgual:
     Z = restriccion[0] * X + restriccion[1] * Y - restriccion[2]
-    plt.contour(X, Y, Z, levels=[0], colors='b')
+    plt.contour(X, Y, Z, levels=[0], colors="b")
 
 # Configurar los ejes y mostrar el gráfico
-plt.xlabel('X')
-plt.ylabel('Y')
+plt.xlabel("X")
+plt.ylabel("Y")
 plt.title("Restricciones")
 plt.xticks(np.arange(0, 1001, 100))
 plt.yticks(np.arange(0, 1001, 100))
@@ -118,11 +135,13 @@ plt.grid(True)
 
 # Para mostrar los puntos en la región factible
 x_puntos, y_puntos = zip(*puntosPolinomio)
-plt.scatter(x_puntos, y_puntos, c='green', label='Puntos', marker='o', zorder=10)
-plt.scatter(x_opt, y_opt, marker="*", label="Punto Óptimo", s=200, color="blue", zorder=11)
+plt.scatter(x_puntos, y_puntos, c="green", label="Puntos", marker="o", zorder=10)
+plt.scatter(
+    x_opt, y_opt, marker="*", label="Punto Óptimo", s=200, color="blue", zorder=11
+)
 
 # Guardar y mostrar la figura
-plt.savefig('../images/restricciones.png')
+plt.savefig("../images/restricciones.png")
 plt.show()
 
 # Para Graficar zona factible
@@ -131,8 +150,8 @@ y = np.linspace(0, 1000, 400)
 x, y = np.meshgrid(x, y)
 
 # Definir las restricciones
-condicion1 = 20*x + 100*y <= 73000
-condicion2 = 30*x + 10*y <= 15000
+condicion1 = 20 * x + 100 * y <= 73000
+condicion2 = 30 * x + 10 * y <= 15000
 condicion3 = y <= 700
 condicion4 = x >= 100
 condicion5 = y >= 100
@@ -156,16 +175,16 @@ plt.grid(True)
 
 # Para mostrar los puntos en la región factible
 x_puntos, y_puntos = zip(*puntosPolinomio)
-plt.scatter(x_puntos, y_puntos, c='red', label='Puntos', marker='o')
+plt.scatter(x_puntos, y_puntos, c="red", label="Puntos", marker="o")
 plt.scatter(x_opt, y_opt, marker="*", label="Punto Óptimo", s=200, color="green")
 plt.legend()
 plt.xticks(np.arange(0, 1001, 100))
 plt.yticks(np.arange(0, 1001, 100))
 plt.grid(True)
 
-plt.text(x_opt + 20, y_opt + 20, f'Punto Óptimo: ({x_opt}, {y_opt})', fontsize=12)
-plt.text(x_opt + 20, y_opt + 70, f'Max Z = {value(problema.objective)}', fontsize=12)
+plt.text(x_opt + 20, y_opt + 20, f"Punto Óptimo: ({x_opt}, {y_opt})", fontsize=12)
+plt.text(x_opt + 20, y_opt + 70, f"Max Z = {value(problema.objective)}", fontsize=12)
 
 # Guardar y mostrar la figura
-plt.savefig('../images/region_factible.png')
+plt.savefig("../images/region_factible.png")
 plt.show()
