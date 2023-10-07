@@ -5,7 +5,7 @@ from pulp import *
 
 # Tomo los valores del excel, solo modificar los num en el excel 
 
-wb = openpyxl.load_workbook("problema.xlsx")
+wb = openpyxl.load_workbook("../Excel/problema.xlsx")
 sheet = wb.active
 funcionObjetivo = [sheet["C3"].value, sheet["D3"].value, sheet["E3"].value]
 restriccionesMenorIgual = [
@@ -18,42 +18,9 @@ restriccionesMayorIgual = [
     [sheet["C8"].value, sheet["D8"].value, sheet["E8"].value],
 ]
 
-print(funcionObjetivo)
-print(restriccionesMenorIgual)
-print(restriccionesMayorIgual)
-
-#####################################
-#### Para obtener solución óptima ###
-#####################################
-# Con esto evito un mensaje enorme en consola
-pulp.LpSolverDefault.msg = 0
-
-# Definir el problema de optimización
-problema = LpProblem("testeo", LpMaximize)
-
-# Variables
-x = LpVariable("x", lowBound=100)
-y = LpVariable("y", 100, 700)
-
-# Función objetivo
-problema += funcionObjetivo[0] * x + funcionObjetivo[1] * y, "obj"
-
-# Restricciones
-problema += restriccionesMenorIgual[0][0] * x + restriccionesMenorIgual[0][1] * y <= restriccionesMenorIgual[0][2], "cl_1"
-problema += restriccionesMenorIgual[1][0] * x + restriccionesMenorIgual[1][1] * y <= restriccionesMenorIgual[1][2], "cl_2"
-problema.solve()
-
-# Valores óptimos de x e y
-x_opt = x.varValue
-y_opt = y.varValue
-
-# Valor óptimo de la función objetivo
-print(f"Max Z = {value(problema.objective)}")
-
-
-#########################################
-#### Para graficas las restricciones ####
-#########################################
+###################################################################
+#### Obtener la solucion optima, pero con el arreglo de puntos ####
+###################################################################
 
 ### Encontrar todos los puntos de interseccion entre las rectas de las restricciones ###
 puntos_interseccion = []
@@ -96,6 +63,63 @@ for punto in puntos_interseccion:
 
 ### Eliminar puntos repetidos en puntosPolinomio ###
 puntosPolinomio = list(set(tuple(p) for p in puntosPolinomio))
+# Func optima
+def f(x, y):
+    return funcionObjetivo[0] * x + funcionObjetivo[1] * y
+
+# Vertices de la zona factible
+maximo = [0,0,0]
+
+# Guarda los resultados en el arreglo tras evaluarlos en la funcion
+resultados = []
+for punto in puntosPolinomio:
+    x, y = punto
+    resultado = f(x, y)
+    resultados.append(resultado)
+    if (resultado >= maximo[2]):
+        maximo[0] = x
+        maximo[1] = y 
+        maximo[2] = resultado
+
+# Imprime los resultados
+for i, punto in enumerate(puntosPolinomio):
+    x, y = punto
+    resultado = resultados[i]
+    print(f"En el punto ({x}, {y}), f(x, y) = {resultado}")
+
+#####################################
+#### Para obtener solución óptima ###
+#####################################
+# Con esto evito un mensaje enorme en consola
+pulp.LpSolverDefault.msg = 0
+
+# Definir el problema de optimización
+problema = LpProblem("testeo", LpMaximize)
+
+# Variables
+x = LpVariable("x", lowBound=100)
+y = LpVariable("y", 100, 700)
+
+# Función objetivo
+problema += funcionObjetivo[0] * x + funcionObjetivo[1] * y, "obj"
+
+# Restricciones
+problema += restriccionesMenorIgual[0][0] * x + restriccionesMenorIgual[0][1] * y <= restriccionesMenorIgual[0][2], "cl_1"
+problema += restriccionesMenorIgual[1][0] * x + restriccionesMenorIgual[1][1] * y <= restriccionesMenorIgual[1][2], "cl_2"
+problema.solve()
+
+# Valores óptimos de x e y
+x_opt = x.varValue
+y_opt = y.varValue
+
+# Valor óptimo de la función objetivo
+print(f"Max Z = {value(problema.objective)}")
+
+
+#########################################
+#### Para graficas las restricciones ####
+#########################################
+
 
 #########################
 #### Graficar Rectas ####
@@ -172,8 +196,8 @@ x_puntos, y_puntos = zip(*puntosPolinomio)
 plt.scatter(x_puntos, y_puntos, c="red", label="Puntos", marker="o")
 plt.scatter(x_opt, y_opt, marker="*", label="Punto Óptimo", s=200, color="green")
 plt.legend()
-plt.xticks(np.arange(0, 1001, 100))
-plt.yticks(np.arange(0, 1001, 100))
+plt.xticks(np.arange(0, 1000, 100))
+plt.yticks(np.arange(0, 1000, 100))
 plt.grid(True)
 
 plt.text(x_opt + 20, y_opt + 20, f"Punto Óptimo: ({x_opt}, {y_opt})", fontsize=12)
@@ -184,26 +208,3 @@ plt.savefig("../images/region_factible.png")
 plt.show()
 
 
-###################################################################
-#### Obtener la solucion optima, pero con el arreglo de puntos ####
-###################################################################
-
-# Func optima
-def f(x, y):
-    return funcionObjetivo[0] * x + funcionObjetivo[1] * y
-
-# Vertices de la zona factible
-print(puntosPolinomio)
-
-# Guarda los resultados en el arreglo tras evaluarlos en la funcion
-resultados = []
-for punto in puntosPolinomio:
-    x, y = punto
-    resultado = f(x, y)
-    resultados.append(resultado)
-
-# Imprime los resultados
-for i, punto in enumerate(puntosPolinomio):
-    x, y = punto
-    resultado = resultados[i]
-    print(f"En el punto ({x}, {y}), f(x, y) = {resultado}")

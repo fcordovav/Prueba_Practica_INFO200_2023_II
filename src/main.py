@@ -30,7 +30,6 @@ y_opt = y.varValue
 # Valor óptimo de la función objetivo
 print(f"Max Z = {value(problema.objective)}")
 
-
 #########################################
 #### Para graficas las restricciones ####
 #########################################
