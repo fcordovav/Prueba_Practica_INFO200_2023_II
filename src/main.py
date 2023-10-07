@@ -62,8 +62,8 @@ for punto in puntos_interseccion:
 puntosPolinomio = list(set(tuple(p) for p in puntosPolinomio))
 
 ### Graficar las restricciones como igualdades ###
-X = np.linspace(0, 2000, 400)  # Valores de X de 0 a 2000
-Y = np.linspace(0, 2000, 400)  # Valores de Y de 0 a 2000
+X = np.linspace(0, 1000, 400)  # Valores de X de 0 a 2000
+Y = np.linspace(0, 1000, 400)  # Valores de Y de 0 a 2000
 # Crear una cuadrícula de valores X e Y
 X, Y = np.meshgrid(X, Y)
 # Calcular las desigualdades para las restricciones MenorIgual
@@ -77,8 +77,8 @@ for restriccion in restriccionesMayorIgual:
 # Configurar los ejes y mostrar el gráfico
 plt.xlabel('X')
 plt.ylabel('Y')
-plt.xlim(0, 2000)
-plt.ylim(0, 2000)
+plt.xlim(0, 1000)
+plt.ylim(0, 1000)
 plt.grid(True)
 plt.show()
 
@@ -87,8 +87,8 @@ plt.show()
 #####################################
 
 # Definir el rango de valores de x y y
-x = np.linspace(0, 2000, 400)  # Rango de valores de x
-y = np.linspace(0, 2000, 400)  # Rango de valores de y
+x = np.linspace(0, 1000, 400)  # Rango de valores de x
+y = np.linspace(0, 1000, 400)  # Rango de valores de y
 # Crear una cuadrícula de puntos (x, y)
 x, y = np.meshgrid(x, y)
 # Definir las restricciones
