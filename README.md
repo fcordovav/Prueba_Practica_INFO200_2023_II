@@ -2,8 +2,7 @@
 
 ## Programa
 
-    Se desarrollaron dos programas para maximizar problemas de programación lineal. El programa 'main.py' no toma inputs directamente para su ejecución, ya que resuelve el problema original. El programa 'mainConExcel.py' toma los inputs del archivo Excel llamado 'problema.xlsx', el cual se encuentra en la carpeta 'Excel'. En este archivo Excel, solo debes modificar las celdas de los valores (el formato está explicado en el mismo archivo). Ambos códigos funcionan de la misma manera, y las instrucciones se resumen de la siguiente manera:
-
+Se desarrollaron dos programas para maximizar problemas de programación lineal. El programa 'main.py' no toma inputs directamente para su ejecución, ya que resuelve el problema original. El programa 'mainConExcel.py' toma los inputs del archivo Excel llamado 'problema.xlsx', el cual se encuentra en la carpeta 'Excel'. En este archivo Excel, solo debes modificar las celdas de los valores (el formato está explicado en el mismo archivo). Ambos códigos funcionan de la misma manera, y las instrucciones se resumen de la siguiente manera:  
     1. Crear arreglos con las restricciones.
     2. Buscar los puntos de intersección entre estas restricciones, considerándolas como igualdades.
     3. Verificar qué puntos cumplen con todas las restricciones (estos serán los vértices de la zona factible).
@@ -13,7 +12,6 @@
     7. Graficar la zona factible con las restricciones y los puntos.
 
 ## Para ejecutar el código
-
     1. Utiliza Python 3 (ejecuta 'main.py' o 'mainConExcel.py' en la consola).
         Ej: python3 main.py
     2. Asegúrate de estar ubicado en la carpeta 'src' al ejecutar el código.
