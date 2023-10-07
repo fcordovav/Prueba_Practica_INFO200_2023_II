@@ -1,4 +1,4 @@
-# Taller 1 INFO200
+# Taller 1 INFO200 Investigación Operativa
 
 # Programa  
 Se desarrollaron dos programas para maximizar problemas de programación lineal. El programa 'main.py' no toma inputs directamente para su ejecución, ya que resuelve el problema original. El programa 'mainConExcel.py' toma los inputs del archivo Excel llamado 'problema.xlsx', el cual se encuentra en la carpeta 'Excel'. En este archivo Excel, solo debes modificar las celdas de los valores (el formato está explicado en el mismo archivo). Ambos códigos funcionan de la misma manera, y las instrucciones se resumen de la siguiente manera: 
@@ -18,4 +18,4 @@ Se desarrollaron dos programas para maximizar problemas de programación lineal.
   Nota: 'mainConExcel.py' requiere la librería 'openpyxl'. Puedes instalarla usando el siguiente comando en la consola:
   pip install openpyxl
 
-  pd: Si quiere ver el excel desde su editor, instale una extensión para hacerlo. Por ejemplo en vscode es: Excel Viewer
+  pd: Si quiere ver y modificar el excel desde su editor, instale una extensión para hacerlo. Por ejemplo en vscode es: Excel Viewer
