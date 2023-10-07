@@ -148,6 +148,7 @@ plt.scatter(x_puntos, y_puntos, c="green", label="Puntos", marker="o", zorder=10
 plt.scatter(
     x_opt, y_opt, marker="*", label="Punto Óptimo", s=200, color="blue", zorder=11
 )
+plt.legend()
 
 # Guardar y mostrar la figura
 plt.savefig("../images/restricciones.png")
